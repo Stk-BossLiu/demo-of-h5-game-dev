@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+onMounted(() => {
+  document.body.style.setProperty('--el-color-primary', '#41b883')
+})
 </script>
 
 <template>

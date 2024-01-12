@@ -43,12 +43,8 @@ function jump2Game() {
 </script>
 
 <template>
-  <div class="game-preview-card">
-    <div
-      class="card-image"
-      :style="{ 'background-image': `url(${cardImage})` }"
-      @click="jump2Game"
-    ></div>
+  <div class="game-preview-card" @click="jump2Game">
+    <div class="card-image" :style="{ 'background-image': `url(${cardImage})` }"></div>
     <div class="category">{{ props.cardInfo.key.category }}</div>
     <div class="heading-text">
       {{ props.cardInfo.key.name }}
@@ -67,6 +63,9 @@ function jump2Game() {
   background: rgb(236, 236, 236);
   padding: 0.4em;
   border-radius: 6px;
+}
+.game-preview-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 .card-image {
   width: 100%;

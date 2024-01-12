@@ -7,12 +7,19 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     GamePreview: typeof import('./components/GamePreview.vue')['default']
+    ICarbonClose: typeof import('~icons/carbon/close')['default']
+    ICarbonCloseFilled: typeof import('~icons/carbon/close-filled')['default']
     ICarbonMobileViewOrientation: typeof import('~icons/carbon/mobile-view-orientation')['default']
+    ICarbonRenew: typeof import('~icons/carbon/renew')['default']
+    ICarbonSearch: typeof import('~icons/carbon/search')['default']
     IEpCarbonMobileViewOrientation: typeof import('~icons/ep/carbon-mobile-view-orientation')['default']
     IEpEdit: typeof import('~icons/ep/edit')['default']
     IEpMobileViewOrientation: typeof import('~icons/ep/mobile-view-orientation')['default']

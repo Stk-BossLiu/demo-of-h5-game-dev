@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import GamePreview from '@/components/GamePreview.vue'
-import { CircleCloseFilled } from '@element-plus/icons-vue'
 import { getCardInfos } from '@/api/home'
 import { ref, onMounted } from 'vue'
 
-const cardInfos = ref([])
+const cardInfos = ref<any>([])
 const demoUrl = ref<string>()
 const isGamePlay = ref<boolean>(true)
 const contentSize = ref<{ width: number; height: number }>({ width: 375, height: 667 })
+const searchInfo = ref<{ option: 'category' | 'name'; text: string }>({
+  option: 'category',
+  text: ''
+})
+const inputTips = ref<string[]>([])
+let cardNames: string[] = []
+let cardCategories: string[] = []
+let rootCardInfos = cardInfos.value
 onMounted(() => {
   getCardInfos().then((res) => {
     cardInfos.value = res as unknown as []
+    rootCardInfos = cardInfos.value
+    for (let card of cardInfos.value) {
+      cardNames.push(card.key.name)
+      cardCategories.push(card.key.category)
+    }
   })
 })
 
@@ -24,14 +36,86 @@ const rotateScreen = function () {
   }
 }
 
+const search = function () {
+  const searchOption = searchInfo.value.option,
+    searchText = searchInfo.value.text,
+    cards = rootCardInfos,
+    options = []
+  if (searchText == '') {
+    return
+  }
+  switch (searchOption) {
+    case 'category':
+      for (let card of cards) {
+        if (card.key.category == searchText) {
+          options.push(card)
+        }
+      }
+      break
+    case 'name':
+      for (let card of cards) {
+        let cardName: string = card.key.name
+        if (cardName.includes(searchText)) {
+          options.push(card)
+        }
+      }
+      break
+  }
+  rerenderPage(options)
+}
+
+const rerenderPage = function (cards: any[]) {
+  cardInfos.value = cards
+}
+
 const getDemoUrl = function (url: string) {
   demoUrl.value = url
   isGamePlay.value = false
+}
+
+const reloadGame = function () {
+  const frameWindow = document.querySelector('iframe')?.contentWindow
+  frameWindow?.location.reload()
+}
+
+const querySearch = function (queryString: string, cb: any) {
+  const curOption = searchInfo.value.option
+  let tips: string[] = []
+  tips = curOption == 'category' ? cardCategories : cardNames
+  tips = Array.from(new Set(tips))
+  const results = queryString ? tips.filter(createFilter(queryString)) : tips
+  cb(results)
+}
+
+const createFilter = function (queryString: string) {
+  return (str: string) => {
+    return str.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+  }
 }
 </script>
 
 <template>
   <main>
+    <div class="search-zone">
+      <el-autocomplete
+        v-model="searchInfo.text"
+        placeholder="Search..."
+        class="search"
+        :fetchSuggestions="querySearch"
+        :clearable="true"
+        @select="search"
+      >
+        <template #prepend>
+          <el-select v-model="searchInfo.option" placeholder="Select" style="width: 100px">
+            <el-option label="Category" value="category"></el-option>
+            <el-option label="Name" value="name"></el-option>
+          </el-select>
+        </template>
+        <template #append>
+          <el-button class="search-button" @click="search"><i-carbon-search /></el-button>
+        </template>
+      </el-autocomplete>
+    </div>
     <div class="content">
       <GamePreview
         v-for="(cardInfo, index) in cardInfos"
@@ -45,22 +129,35 @@ const getDemoUrl = function (url: string) {
     <div class="game-play-box" :hidden="isGamePlay">
       <div class="game-play-component">
         <el-icon
-          class="game-play-close-button"
+          class="game-play-close-button interaction-icon"
           size="35"
           color="#696969"
           @click="isGamePlay = !isGamePlay"
-          ><CircleCloseFilled
+          ><i-carbon-close-filled
         /></el-icon>
         <el-icon
-          class="game-play-orientation-button"
+          class="game-play-orientation-button interaction-icon"
           size="35"
           color="#696969"
           @click="rotateScreen"
         >
           <i-carbon-mobile-view-orientation
         /></el-icon>
+        <el-icon
+          class="game-play-reload-button interaction-icon"
+          size="35"
+          color="#696969"
+          @click="reloadGame"
+        >
+          <i-carbon-renew
+        /></el-icon>
       </div>
-      <iframe class="game-play" :src="demoUrl"></iframe>
+      <iframe
+        class="game-play"
+        :src="demoUrl"
+        security="restricted"
+        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+      ></iframe>
     </div>
   </main>
 </template>
@@ -106,22 +203,28 @@ main {
 
 .game-play-close-button {
   position: absolute;
-  right: 10px;
+  right: 2.5%;
+  cursor: pointer;
+}
+
+.game-play-reload-button {
+  position: absolute;
+  left: 45%;
   cursor: pointer;
 }
 
 .game-play-orientation-button {
   position: absolute;
-  left: 10px;
+  left: 2.5%;
   cursor: pointer;
 }
 
-.game-play-orientation-button:hover {
-  color: #41b883;
+.search-button:hover {
+  background-color: #41b883;
   transform: scale(1.1);
 }
 
-.game-play-close-button:hover {
+.interaction-icon:hover {
   color: #41b883;
   transform: scale(1.1);
 }

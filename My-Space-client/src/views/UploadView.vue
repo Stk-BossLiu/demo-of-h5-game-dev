@@ -56,19 +56,23 @@ const fileUpload = async function (file: File): Promise<boolean> {
 const onSubmitBtn = async function () {
   isHideLoading.value = false
   if (uploadInfo.value.name == '') {
-    alert('缺少参数')
+    ElMessage.warning('缺少参数')
+    isHideLoading.value = true
     return
   }
   if (uploadInfo.value.category == '') {
-    alert('缺少参数')
+    ElMessage.warning('缺少参数')
+    isHideLoading.value = true
     return
   }
   if (!file) {
-    alert('缺少playable')
+    ElMessage.warning('缺少参数')
+    isHideLoading.value = true
     return
   }
   if (password.value == '') {
-    alert('输入密码')
+    ElMessage.warning('缺少参数')
+    isHideLoading.value = true
     return
   }
   let status: boolean = true
