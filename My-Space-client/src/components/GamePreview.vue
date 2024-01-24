@@ -24,6 +24,7 @@ const emit = defineEmits(['transfer'])
 const cardImage = ref('')
 
 onMounted(() => {
+  console.log(props.cardInfo.key)
   try {
     getCardImage({ id: props.cardInfo.key.id }).then((res) => {
       if (!res) {
@@ -37,7 +38,8 @@ onMounted(() => {
   }
 })
 function jump2Game() {
-  const src: string = props.cardInfo.key.url + '.html'
+  // 从服务端获取游戏的url
+  const src = 'http://127.0.0.1:3000' + props.cardInfo.key.url + '.html'
   emit('transfer', src)
 }
 </script>

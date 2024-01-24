@@ -17,6 +17,7 @@ let cardCategories: string[] = []
 let rootCardInfos = cardInfos.value
 onMounted(() => {
   getCardInfos().then((res) => {
+    console.log('res' + res)
     cardInfos.value = res as unknown as []
     rootCardInfos = cardInfos.value
     for (let card of cardInfos.value) {
@@ -70,12 +71,13 @@ const rerenderPage = function (cards: any[]) {
 
 const getDemoUrl = function (url: string) {
   demoUrl.value = url
+  console.log(demoUrl.value)
   isGamePlay.value = false
 }
 
 const reloadGame = function () {
-  const frameWindow = document.querySelector('iframe')?.contentWindow
-  frameWindow?.location.reload()
+  const frameWindow = document.querySelector('iframe')
+  window.open(frameWindow?.src, 're', '')
 }
 
 const querySearch = function (queryString: string, cb: any) {
@@ -155,6 +157,7 @@ const createFilter = function (queryString: string) {
       <iframe
         class="game-play"
         :src="demoUrl"
+        name="re"
         security="restricted"
         sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
       ></iframe>

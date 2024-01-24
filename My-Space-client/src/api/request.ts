@@ -22,14 +22,20 @@ const handleCode = async (code: number, msg: string) => {
 
 //创建axsio 赋给常量service
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL:
+    import.meta.env.NODE_ENV === 'development'
+      ? 'import.meta.env.VITE_APP_BASE_URL'
+      : 'http://127.0.0.1:3000',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   }
 })
 const fileService: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL:
+    import.meta.env.NODE_ENV === 'development'
+      ? 'import.meta.env.VITE_APP_BASE_URL'
+      : 'http://127.0.0.1:3000',
   timeout: 30000,
   headers: {
     'Content-Type': 'multipart/form-data'
@@ -95,7 +101,14 @@ const GET = ({ url, params }: requestType) => {
 }
 
 const ImageGet = ({ url, params }: requestType) => {
-  return axios({
+  const instance = axios.create({
+    baseURL: 'http://127.0.0.1:3000',
+    timeout: 30000,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
+  })
+  return instance({
     method: 'GET',
     url: url,
     params: params,
