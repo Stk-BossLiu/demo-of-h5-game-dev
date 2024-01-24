@@ -2,10 +2,15 @@ const fs = require("fs");
 var bodyParser = require("body-parser");
 const express = require("express");
 const multer = require("multer");
+const cors = require("cors");
 const app = express();
+const path = require("path");
 const clientUrl = __dirname.replace("-server", "");
 let curPlayableInfo = {};
 var cardInfos = [];
+app.use(bodyParser.json());
+app.use(cors());
+app.use(express.static(path.join(__dirname, "assets")));
 const storage = multer.diskStorage({
 	destination(req, file, cb) {
 		if (file.mimetype.startsWith("image")) {
@@ -13,11 +18,7 @@ const storage = multer.diskStorage({
 		} else {
 			// 生产环境去掉/public
 			if (curPlayableInfo != {}) {
-				console.log(file);
-				cb(
-					null,
-					clientUrl + "/public" + "/playables/" + curPlayableInfo.folder
-				);
+				cb(null, clientUrl + "/playables/" + curPlayableInfo.folder);
 			}
 		}
 	},
@@ -32,12 +33,11 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-app.use(bodyParser.json());
+
 const port = 3000;
 
 function resolveData() {
 	const dataJson = fs.readFileSync("./data.json", "utf-8");
-	console.log("dataJson>>>>>>", dataJson);
 	const data = JSON.parse(dataJson);
 	var cardInfos = [],
 		cardImages = [];
@@ -103,6 +103,7 @@ app.get("/", (req, res) => {
 
 app.get("/api/renderCard", (req, res) => {
 	cardInfos = resolveData()[0];
+	console.log(cardInfos);
 	res.send(cardInfos);
 });
 
