@@ -8,9 +8,12 @@ const path = require("path");
 const clientUrl = __dirname.replace("-server", "");
 let curPlayableInfo = {};
 var cardInfos = [];
+var history = require("connect-history-api-fallback");
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "assets")));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(history());
 const storage = multer.diskStorage({
 	destination(req, file, cb) {
 		if (file.mimetype.startsWith("image")) {
@@ -96,10 +99,6 @@ function deleteToken(token) {
 //   var base64Str = Buffer.from(bitmap, 'binary').toString('base64'); // base64编码
 //   return base64Str;
 // }
-
-app.get("/", (req, res) => {
-	res.send("Hello World!");
-});
 
 app.get("/api/renderCard", (req, res) => {
 	cardInfos = resolveData()[0];

@@ -12,7 +12,7 @@ dist
 dist-ssr
 coverage
 *.local
-
+My-Space-server/public
 /cypress/videos/
 /cypress/screenshots/
 playables/
