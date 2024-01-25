@@ -8,6 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Inspect from 'vite-plugin-inspect'
+import customBuild from './plugins/vite-plugin-build'
 
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 /** @type {import('vite').UserConfig} */
@@ -17,6 +18,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    customBuild(),
     AutoImport({
       imports: ['vue'],
       resolvers: [
@@ -78,5 +80,9 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  build: {
+    outDir: '../My-Space-server/public',
+    rollupOptions: {}
   }
 })
