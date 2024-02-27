@@ -152,13 +152,7 @@ const createFilter = function (queryString: string) {
           <i-carbon-renew
         /></el-icon>
       </div>
-      <iframe
-        class="game-play"
-        :src="demoUrl"
-        name="re"
-        security="restricted"
-        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-      ></iframe>
+      <iframe class="game-play" :src="demoUrl" name="re"></iframe>
     </div>
   </main>
 </template>
