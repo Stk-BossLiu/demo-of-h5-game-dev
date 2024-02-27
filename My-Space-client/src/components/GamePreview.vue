@@ -40,7 +40,7 @@ onMounted(() => {
 })
 function jump2Game() {
   // 从服务端获取游戏的url
-  const src = './' + props.cardInfo.key.url + '.html'
+  const src = '.' + props.cardInfo.key.url + '.html'
   if (props.cardInfo.key.name == 'Match') {
     const w = window.open(src, 'blank')
     w?.resizeTo(750, 1334)
