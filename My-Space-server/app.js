@@ -5,7 +5,7 @@ const multer = require("multer");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-const clientUrl = __dirname.replace("-server", "");
+
 let curPlayableInfo = {};
 var cardInfos = [];
 var history = require("connect-history-api-fallback");
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 		} else {
 			// 生产环境去掉/public
 			if (curPlayableInfo != {}) {
-				cb(null, clientUrl + "/playables/" + curPlayableInfo.folder);
+				cb(null, __dirname + "public/playables/" + curPlayableInfo.folder);
 			}
 		}
 	},
