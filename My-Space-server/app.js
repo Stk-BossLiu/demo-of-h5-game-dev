@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 		} else {
 			// 生产环境去掉/public
 			if (curPlayableInfo != {}) {
-				cb(null, __dirname + "public/playables/" + curPlayableInfo.folder);
+				cb(null, __dirname + "/public/playables/" + curPlayableInfo.folder);
 			}
 		}
 	},
@@ -100,23 +100,20 @@ app.post("/api/Authenticate", (req, res) => {
 	}
 });
 
-app.get("/api/removeCardInServer", (req, res) => {
+app.get("/api/removeCardInServer", async (req, res) => {
 	const id = req.query.id,
 		name = req.query.name;
-
-	console.log(data[`card${id}`]);
 	try {
 		const dataJson = fs.readFileSync("./data.json", "utf-8");
 		const data = JSON.parse(dataJson);
 		delete data[`card${id}`];
-		console.log(JSON.stringify(data));
-		fs.writeFileSync("./data.json", JSON.stringify(data));
-		fs.unlinkSync(`./assets/images/${name}`);
-		fs.unlinkSync(`./public/playables/${name}`);
+		await fs.writeFileSync("./data.json", JSON.stringify(data));
+		await fs.unlinkSync(`./assets/images/${name}`);
+		await fs.unlinkSync(`./public/playables/${name}`);
+		res.send({ code: 0, msg: "删除成功" });
 	} catch (e) {
 		res.send({ code: 1, msg: e });
 	}
-	res.send({ code: 0, msg: "上传成功", url: "" });
 });
 
 app.listen(port, () => {
