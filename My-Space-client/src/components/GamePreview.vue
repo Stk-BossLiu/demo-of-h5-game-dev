@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getCardImage, userAuthenticate, removeCardInServer } from '@/api/home'
-import { ElMessage } from 'element-plus'
+import { ElMessage, cardProps } from 'element-plus'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps({
@@ -41,7 +41,12 @@ onMounted(() => {
 function jump2Game() {
   // 从服务端获取游戏的url
   const src = './' + props.cardInfo.key.url + '.html'
-  emit('transfer', src)
+  if (props.cardInfo.key.name == 'Match') {
+    const w = window.open(src, 'blank')
+    w?.resizeTo(750, 1334)
+  } else {
+    emit('transfer', src)
+  }
 }
 
 function removeCard() {
