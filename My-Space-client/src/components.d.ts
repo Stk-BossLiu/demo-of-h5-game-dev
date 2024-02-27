@@ -15,6 +15,7 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     GamePreview: typeof import('./components/GamePreview.vue')['default']
     ICarbonCloseFilled: typeof import('~icons/carbon/close-filled')['default']
+    ICarbonDelete: typeof import('~icons/carbon/delete')['default']
     ICarbonMobileViewOrientation: typeof import('~icons/carbon/mobile-view-orientation')['default']
     ICarbonRenew: typeof import('~icons/carbon/renew')['default']
     ICarbonSearch: typeof import('~icons/carbon/search')['default']

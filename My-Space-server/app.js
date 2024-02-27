@@ -51,55 +51,6 @@ function resolveData() {
 	return [cardInfos, cardImages];
 }
 
-function generateToken() {
-	let token = "";
-	for (let i = 0; i <= 32; i++) {
-		const n = Math.floor(Math.random() * 16.0).toString(16);
-		token += n;
-	}
-	let time = Date.now();
-	let tokensJson = fs.readFileSync("./tokens.json", "utf-8");
-	let tokens = JSON.parse(tokensJson);
-	tokens[token] = time.toString();
-	fs.writeFileSync("./tokens.json", JSON.stringify(tokens));
-	const tokenPeriodTimer = setTimeout(() => {
-		deleteToken(token);
-		clearTimeout(tokenPeriodTimer);
-	}, 1000 * 60 * 30); // 30分钟后删除token
-	return token;
-}
-
-function checkToken(token) {
-	const tokensJson = fs.readFileSync("./tokens.json");
-	const tokens = JSON.parse(JSON.stringify(tokensJson));
-	const nowTime = Date.now();
-	if (nowTime - tokens[token] > 1000 * 60 * 30) {
-		deleteToken(token);
-		return false;
-	}
-	if (tokens[token]) return true;
-	return false;
-}
-
-function initTokens() {
-	let tokens = {};
-	fs.writeFileSync("./tokens.json", JSON.stringify(tokens));
-}
-
-function deleteToken(token) {
-	let tokensJson = fs.readFileSync("./tokens.json");
-	let tokens = JSON.parse(JSON.stringify(tokensJson));
-	delete tokens[token];
-	fs.writeFileSync("./tokens.json", JSON.stringify(tokens));
-}
-
-// function img2Base64(imgUrl) {
-//   console.log(imgUrl);
-//   var bitmap = fs.readFileSync(imgUrl);
-//   var base64Str = Buffer.from(bitmap, 'binary').toString('base64'); // base64编码
-//   return base64Str;
-// }
-
 app.get("/api/renderCard", (req, res) => {
 	cardInfos = resolveData()[0];
 	console.log(cardInfos);
@@ -114,7 +65,6 @@ app.get("/api/cardImage", (req, res) => {
 });
 
 app.post("/api/uploadInfoSubmit", (req, res) => {
-	console.log("uploadInfo: ", req.body);
 	if (req.body == {}) {
 		res.send({ code: 1, msg: "参数错误" });
 		return;
@@ -139,9 +89,8 @@ app.post("/api/uploadFile", upload.single("file"), async (req, res, next) => {
 
 app.post("/api/Authenticate", (req, res) => {
 	const param = req.body;
-	const token = generateToken();
 	if (!param.password) {
-		res.send({ code: 1, msg: "参数为空", token: token });
+		res.send({ code: 1, msg: "参数为空" });
 		return;
 	}
 	if (param.password === "666888999") {
@@ -149,6 +98,25 @@ app.post("/api/Authenticate", (req, res) => {
 	} else {
 		res.send({ code: 2, msg: "密码错误" });
 	}
+});
+
+app.get("/api/removeCardInServer", (req, res) => {
+	const id = req.query.id,
+		name = req.query.name;
+
+	console.log(data[`card${id}`]);
+	try {
+		const dataJson = fs.readFileSync("./data.json", "utf-8");
+		const data = JSON.parse(dataJson);
+		delete data[`card${id}`];
+		console.log(JSON.stringify(data));
+		fs.writeFileSync("./data.json", JSON.stringify(data));
+		fs.unlinkSync(`./assets/images/${name}`);
+		fs.unlinkSync(`./public/playables/${name}`);
+	} catch (e) {
+		res.send({ code: 1, msg: e });
+	}
+	res.send({ code: 0, msg: "上传成功", url: "" });
 });
 
 app.listen(port, () => {

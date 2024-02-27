@@ -11,13 +11,11 @@ const searchInfo = ref<{ option: 'category' | 'name'; text: string }>({
   option: 'category',
   text: ''
 })
-const inputTips = ref<string[]>([])
 let cardNames: string[] = []
 let cardCategories: string[] = []
 let rootCardInfos = cardInfos.value
 onMounted(() => {
   getCardInfos().then((res) => {
-    console.log('res' + res)
     cardInfos.value = res as unknown as []
     rootCardInfos = cardInfos.value
     for (let card of cardInfos.value) {

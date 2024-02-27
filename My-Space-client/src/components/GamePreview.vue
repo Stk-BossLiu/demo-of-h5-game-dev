@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { getCardImage } from '@/api/home'
+import { getCardImage, userAuthenticate, removeCardInServer } from '@/api/home'
+import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps({
@@ -13,7 +14,8 @@ const props = defineProps({
         name: 'Game Title',
         authorName: 'Author Name',
         uploadingDate: '2021-10-10',
-        url: '/playables/bta/BTA_iOS_Applovin_SantaSnow_PA_20231213.html'
+        url: '/playables/bta/BTA_iOS_Applovin_SantaSnow_PA_20231213.html',
+        imageUrl: '/playables/bta/BTA_iOS_Applovin_SantaSnow_PA_20231213.png'
       }
     }
   }
@@ -24,7 +26,6 @@ const emit = defineEmits(['transfer'])
 const cardImage = ref('')
 
 onMounted(() => {
-  console.log(props.cardInfo.key)
   try {
     getCardImage({ id: props.cardInfo.key.id }).then((res) => {
       if (!res) {
@@ -42,11 +43,43 @@ function jump2Game() {
   const src = 'http://127.0.0.1:3000' + props.cardInfo.key.url + '.html'
   emit('transfer', src)
 }
+
+function removeCard() {
+  // 弹出密码框
+  const password = prompt('请输入密码')
+  console.log(password)
+  userAuthenticate({ password: password }).then((res) => {
+    const code: number = res.code
+    const msg = res.msg
+    if (code) {
+      ElMessage.error(code + ':' + msg)
+      return
+    }
+    removeCardInServer({
+      id: props.cardInfo.key.id,
+      imageUrl: props.cardInfo.key.imageUrl,
+      playableUrl: props.cardInfo.key.url
+    }).then((res: any) => {
+      const code: number = res.code
+      const msg = res.msg
+      if (code) {
+        ElMessage.error(code + ':' + msg)
+        return
+      }
+      ElMessage.success('删除成功')
+      emit('transfer', 'refresh')
+    })
+  })
+}
 </script>
 
 <template>
-  <div class="game-preview-card" @click="jump2Game">
-    <div class="card-image" :style="{ 'background-image': `url(${cardImage})` }"></div>
+  <div class="game-preview-card">
+    <div
+      class="card-image"
+      :style="{ 'background-image': `url(${cardImage})` }"
+      @click="jump2Game"
+    ></div>
     <div class="category">{{ props.cardInfo.key.category }}</div>
     <div class="heading-text">
       {{ props.cardInfo.key.name }}
@@ -56,6 +89,7 @@ function jump2Game() {
         {{ props.cardInfo.key.uploadingDate }}
       </div>
     </div>
+    <div class="option" @click="removeCard"><i-carbon-delete /></div>
   </div>
 </template>
 
@@ -76,6 +110,12 @@ function jump2Game() {
 }
 .card-image:hover {
   transform: scale(0.98);
+}
+.option {
+  float: right;
+  margin-top: -25px;
+  margin-right: 0px;
+  color: red;
 }
 .category {
   text-transform: uppercase;

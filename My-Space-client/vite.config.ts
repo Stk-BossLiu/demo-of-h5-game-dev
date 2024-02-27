@@ -78,6 +78,10 @@ export default defineConfig({
       '/api/uploadFile': {
         target: 'http://localhost:3000',
         changeOrigin: true
+      },
+      'api/removeCardInServer': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
       }
     }
   },

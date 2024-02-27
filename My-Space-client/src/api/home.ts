@@ -36,3 +36,10 @@ export const uploadInfoSubmit = (params?: Object): Promise<any> => {
     params
   })
 }
+
+export const removeCardInServer = (params?: Object): Promise<any> => {
+  return GET({
+    url: '/api/removeCardInServer',
+    params
+  })
+}
