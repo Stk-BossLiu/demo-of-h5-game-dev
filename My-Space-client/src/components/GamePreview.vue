@@ -40,7 +40,7 @@ onMounted(() => {
 })
 function jump2Game() {
   // 从服务端获取游戏的url
-  const src = 'http://127.0.0.1:3000' + props.cardInfo.key.url + '.html'
+  const src = 'http://149.104.25.79:3000' + props.cardInfo.key.url + '.html'
   emit('transfer', src)
 }
 
